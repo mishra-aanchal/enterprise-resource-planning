@@ -7,6 +7,7 @@ Shared middleware, shared database, shared dependencies
 from flask import Flask, jsonify, request
 from datetime import datetime
 import logging
+import os
 from typing import Dict, Any
 
 # Import mock data service
@@ -2703,6 +2704,6 @@ if __name__ == '__main__':
     app = create_app()
     app.run(
         host='0.0.0.0',
-        port=3001,
+        port=int(os.environ.get('PORT', 3004)),
         debug=True
     )

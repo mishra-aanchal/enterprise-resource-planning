@@ -62,10 +62,10 @@ Check if the API is running:
 
 ```bash
 # Health check
-curl http://localhost:3001/health
+curl http://localhost:3004/health
 
 # API info
-curl http://localhost:3001/api/v2
+curl http://localhost:3004/api/v2
 ```
 
 Expected response from health check:
@@ -94,7 +94,7 @@ The Docker deployment includes:
 │                                         │
 │  ┌───────────────────────────────────┐ │
 │  │     ERP API Container             │ │
-│  │     Port: 3001                    │ │
+│  │     Port: 3004                    │ │
 │  │     Node.js 20 Alpine             │ │
 │  └───────────┬───────────────────────┘ │
 │              │                          │
@@ -117,7 +117,7 @@ Key environment variables you can configure in `.env`:
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `NODE_ENV` | Application environment | `production` |
-| `PORT` | API port | `3001` |
+| `PORT` | API port | `3004` |
 | `JWT_SECRET` | Secret key for JWT tokens | *Must be changed* |
 | `AUTH_TOKEN` | Bearer token for API auth | *Must be changed* |
 | `DB_HOST` | Database hostname | `db` |
@@ -130,12 +130,12 @@ Key environment variables you can configure in `.env`:
 
 ### Port Configuration
 
-By default, the API is exposed on port `3001`. To change this:
+By default, the API is exposed on port `3004`. To change this:
 
 1. Update `docker-compose.yml`:
    ```yaml
    ports:
-     - "8080:3001"  # Maps host port 8080 to container port 3001
+     - "8080:3004"  # Maps host port 8080 to container port 3004
    ```
 
 2. Update `BASE_URL` in `.env`:
@@ -230,7 +230,7 @@ docker-compose exec -T db psql -U erp_user erp_database < backup.sql
 The deployment includes automatic health checks:
 
 ### API Health Check
-- **Endpoint**: `http://localhost:3001/health`
+- **Endpoint**: `http://localhost:3004/health`
 - **Interval**: Every 30 seconds
 - **Timeout**: 10 seconds
 - **Retries**: 3 attempts
@@ -286,8 +286,8 @@ docker network inspect enterprise-resource-planning_erp-network
 docker-compose logs erp-api
 
 # Check if port is already in use
-lsof -i :3001  # macOS/Linux
-netstat -ano | findstr :3001  # Windows
+lsof -i :3004  # macOS/Linux
+netstat -ano | findstr :3004  # Windows
 
 # Restart services
 docker-compose restart
@@ -355,8 +355,8 @@ services:
 
 Once deployed, access the API:
 
-- **Health Check**: `http://localhost:3001/health`
-- **API Info**: `http://localhost:3001/api/v2`
+- **Health Check**: `http://localhost:3004/health`
+- **API Info**: `http://localhost:3004/api/v2`
 
 ### Available Modules
 
@@ -378,7 +378,7 @@ Most endpoints require Bearer token authentication:
 
 ```bash
 curl -H "Authorization: Bearer YOUR_AUTH_TOKEN" \
-     http://localhost:3001/api/v2/hr/employees
+     http://localhost:3004/api/v2/hr/employees
 ```
 
 ## 🔄 Updates and Maintenance
