@@ -348,7 +348,7 @@ def create_app() -> Flask:
             ],
             'characteristics': {
                 'deploymentUnit': 'Single monolithic application',
-                'database': 'Shared Neon (serverless PostgreSQL) database',
+                'database': 'Shared PostgreSQL database',
                 'coupling': 'Tight coupling between modules (direct service calls)',
                 'middleware': 'Shared authentication, logging, and error handling'
             }
