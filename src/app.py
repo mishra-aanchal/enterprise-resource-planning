@@ -1149,11 +1149,29 @@ def create_app() -> Flask:
         return jsonify(serialize_purchase_order(p))
     
     def _transition_po(po_id, new_status, timestamp_key, message):
-        """Helper: update PO status in DB and return serialized result."""
+        """Helper: update PO status in DB and return serialized result.
+
+        Cross-module coupling: when a PO transitions to `received`, this also
+        writes an expense Transaction to the accounting module's ledger.
+        Both writes share a single DB transaction — characteristic of the
+        monolithic architecture described in ARCHITECTURE.md.
+        """
         p = db.session.get(PurchaseOrder, po_id)
         if p is None:
             return jsonify({'error': 'Purchase order not found'}), 404
+
+        is_first_receive = new_status == 'received' and p.status != 'received'
         p.status = new_status
+
+        if is_first_receive:
+            db.session.add(Transaction(
+                id='txn-' + str(int(datetime.utcnow().timestamp() * 1000)),
+                date=datetime.utcnow().date(),
+                description=f'PO received: {p.po_number} from vendor {p.vendor_id}',
+                amount=p.total_amount or 0,
+                type='debit',
+            ))
+
         db.session.commit()
         result = serialize_purchase_order(p)
         result[timestamp_key] = datetime.utcnow().isoformat() + 'Z'
