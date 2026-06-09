@@ -557,7 +557,10 @@ export const placePurchaseOrder = async (id: string) => {
 }
 
 export const receivePurchaseOrder = async (id: string) => {
-  const response = await api.post(`/api/procurement/purchase-orders/${id}/receive`)
+  // Procurement /receive accepts a body of received items (for partial
+  // receipts). Send {items: []} so the request has the application/json
+  // content type — Flask returns 415 otherwise.
+  const response = await api.post(`/api/procurement/purchase-orders/${id}/receive`, { items: [] })
   return response.data?.data ?? response.data
 }
 

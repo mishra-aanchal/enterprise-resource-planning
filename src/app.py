@@ -1505,6 +1505,7 @@ def create_app() -> Flask:
         try:
             resp = http.post(
                 f'{procurement_url}/api/procurement/purchase-orders/{po_id}/receive',
+                json={'items': []},
                 timeout=5,
             )
         except Exception as e:
