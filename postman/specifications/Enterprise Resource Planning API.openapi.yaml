@@ -1166,7 +1166,6 @@ components:
         - lastName
         - email
         - departmentId
-        - position
         - salary
         - hireDate
       properties:
@@ -1179,7 +1178,10 @@ components:
           format: email
         departmentId:
           type: string
+        # Both `position` and `jobTitle` are accepted for compatibility
         position:
+          type: string
+        jobTitle:
           type: string
         salary:
           type: number
