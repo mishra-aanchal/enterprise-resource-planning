@@ -12,38 +12,35 @@ bp = Blueprint('hr', __name__)
 # Mock data for demonstration
 mock_employees = [
     {
-        "id": 1,
-        "employee_id": "EMP001",
-        "first_name": "John",
-        "last_name": "Doe",
+        "employee-id": "EMP001",
+        "firstName": "John",
+        "lastName": "Doe",
         "email": "john.doe@company.com",
-        "department": "Engineering",
+        "departmentId": "dept-001",
         "position": "Senior Software Engineer",
-        "hire_date": "2022-01-15",
+        "hireDate": "2022-01-15",
         "salary": 95000,
         "status": "active"
     },
     {
-        "id": 2,
-        "employee_id": "EMP002",
-        "first_name": "Jane",
-        "last_name": "Smith",
+        "employee-id": "EMP002",
+        "firstName": "Jane",
+        "lastName": "Smith",
         "email": "jane.smith@company.com",
-        "department": "Marketing",
+        "departmentId": "dept-002",
         "position": "Marketing Manager",
-        "hire_date": "2021-03-10",
+        "hireDate": "2021-03-10",
         "salary": 75000,
         "status": "active"
     },
     {
-        "id": 3,
-        "employee_id": "EMP003",
-        "first_name": "Mike",
-        "last_name": "Johnson",
+        "employee-id": "EMP003",
+        "firstName": "Mike",
+        "lastName": "Johnson",
         "email": "mike.johnson@company.com",
-        "department": "Finance",
+        "departmentId": "dept-003",
         "position": "Financial Analyst",
-        "hire_date": "2023-06-01",
+        "hireDate": "2023-06-01",
         "salary": 65000,
         "status": "active"
     }
@@ -51,24 +48,24 @@ mock_employees = [
 
 mock_departments = [
     {
-        "id": 1,
+        "id": "dept-001",
         "name": "Engineering",
         "description": "Software development and technical operations",
-        "manager_id": 1,
+        "manager_id": "EMP001",
         "employee_count": 15
     },
     {
-        "id": 2,
+        "id": "dept-002",
         "name": "Marketing",
         "description": "Brand management and customer acquisition",
-        "manager_id": 2,
+        "manager_id": "EMP002",
         "employee_count": 8
     },
     {
-        "id": 3,
+        "id": "dept-003",
         "name": "Finance",
         "description": "Financial planning and accounting",
-        "manager_id": 3,
+        "manager_id": "EMP003",
         "employee_count": 5
     }
 ]
@@ -83,16 +80,16 @@ def get_employees():
         "timestamp": datetime.utcnow().isoformat() + 'Z'
     })
 
-@bp.route('/employees/<int:employee_id>', methods=['GET'])
+@bp.route('/employees/<employee_id>', methods=['GET'])
 def get_employee(employee_id):
     """Get employee by ID"""
-    employee = next((emp for emp in mock_employees if emp['id'] == employee_id), None)
+    employee = next((emp for emp in mock_employees if emp['employee-id'] == employee_id), None)
 
     if not employee:
         return jsonify({
             "success": False,
             "error": "Employee not found",
-            "employee_id": employee_id
+            "employee-id": employee_id
         }), 404
 
     return jsonify({
@@ -112,19 +109,20 @@ def create_employee():
             "error": "No data provided"
         }), 400
 
-    # Generate new ID
-    new_id = max([emp['id'] for emp in mock_employees], default=0) + 1
+    # Generate new sequential ID based on current list length
+    new_id = len(mock_employees) + 1
 
     new_employee = {
-        "id": new_id,
-        "employee_id": data.get('employee_id', f"EMP{new_id:03d}"),
-        "first_name": data.get('first_name'),
-        "last_name": data.get('last_name'),
+        "employee-id": f"EMP{new_id:03d}",
+        "firstName": data.get('firstName') or data.get('first_name'),
+        "lastName": data.get('lastName') or data.get('last_name'),
         "email": data.get('email'),
-        "department": data.get('department'),
-        "position": data.get('position'),
-        "hire_date": data.get('hire_date', datetime.now().strftime('%Y-%m-%d')),
+        "departmentId": data.get('departmentId') or data.get('department_id'),
+        # Accept both `position` and `jobTitle` for compatibility
+        "position": data.get('position') or data.get('jobTitle'),
         "salary": data.get('salary'),
+        "hireDate": data.get('hireDate') or data.get('hire_date', datetime.now().strftime('%Y-%m-%d')),
+        "phoneNumber": data.get('phoneNumber') or data.get('phone_number'),
         "status": data.get('status', 'active')
     }
 
@@ -147,7 +145,7 @@ def get_departments():
         "timestamp": datetime.utcnow().isoformat() + 'Z'
     })
 
-@bp.route('/departments/<int:department_id>', methods=['GET'])
+@bp.route('/departments/<department_id>', methods=['GET'])
 def get_department(department_id):
     """Get department by ID"""
     department = next((dept for dept in mock_departments if dept['id'] == department_id), None)
@@ -165,7 +163,7 @@ def get_department(department_id):
         "timestamp": datetime.utcnow().isoformat() + 'Z'
     })
 
-@bp.route('/departments/<int:department_id>/employees', methods=['GET'])
+@bp.route('/departments/<department_id>/employees', methods=['GET'])
 def get_department_employees(department_id):
     """Get all employees in a specific department"""
     department = next((dept for dept in mock_departments if dept['id'] == department_id), None)
@@ -177,7 +175,7 @@ def get_department_employees(department_id):
             "department_id": department_id
         }), 404
 
-    department_employees = [emp for emp in mock_employees if emp['department'] == department['name']]
+    department_employees = [emp for emp in mock_employees if emp.get('departmentId') == department['id']]
 
     return jsonify({
         "success": True,
