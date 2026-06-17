@@ -4,5 +4,5 @@ url: '{{baseUrl}}/api/v2/hr/employees/:id'
 method: DELETE
 pathVariables:
   - key: id
-    value: '{{employeeId}}'
+    value: emp-001
 order: 7000

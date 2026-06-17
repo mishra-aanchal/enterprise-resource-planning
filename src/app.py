@@ -1712,7 +1712,7 @@ def create_app() -> Flask:
         try:
             data = request.get_json()
             employee = {
-                'employee-id': 'emp-' + str(datetime.utcnow().timestamp()),
+                'id': 'emp-' + str(datetime.utcnow().timestamp()),
                 'firstName': data.get('firstName'),
                 'lastName': data.get('lastName'),
                 'email': data.get('email'),
