@@ -1711,14 +1711,11 @@ def create_app() -> Flask:
         """V2: Create a new employee"""
         try:
             data = request.get_json()
-            now = datetime.utcnow()
             employee = {
-                'employee-id': 'emp-' + str(now.timestamp()),
-                'employeeId': 'EMP-' + now.strftime('%Y') + '-' + str(int(now.timestamp()))[-4:],
+                'id': 'emp-' + str(datetime.utcnow().timestamp()),
                 'firstName': data.get('firstName'),
                 'lastName': data.get('lastName'),
                 'email': data.get('email'),
-                'department': data.get('department'),
                 'departmentId': data.get('departmentId'),
                 'position': data.get('position'),
                 'salary': data.get('salary'),
