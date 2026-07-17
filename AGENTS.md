@@ -8,12 +8,12 @@ The repository is a monolithic application. Natively running it with `npm run de
 ## 2. Check for existing processes
 Before starting, always check if processes are already running on ports `3004` (backend) or `5173` (frontend). If they are running in the background from a previous turn, **kill them** before attempting to restart the server natively, otherwise it will crash with an "Address already in use" error.
 
-## 3. Setup and Database Initialization (If Requested / First Time)
-If the user wants to set up the environment and database from scratch, execute:
+## 3. Mandatory Setup (ALWAYS RUN THIS FIRST)
+When starting a fresh project, you MUST execute the setup script first:
 ```bash
 npm run setup
 ```
-This handles installing dependencies, creating the Python virtual environment, and running the database migrations/seeds. (You do NOT need to run docker-compose since it defaults to SQLite locally).
+This handles installing root dependencies (like `concurrently`), frontend dependencies, creating the Python virtual environment, generating the `.env` file, and running the database migrations/seeds. If you skip this, `npm run dev` will fail with errors like `concurrently: command not found`.
 
 ## 4. Running the Code (Native Seamless Runner)
 The project includes a root `package.json` that uses `concurrently` to start both the Python backend and Vite frontend in a single terminal.
