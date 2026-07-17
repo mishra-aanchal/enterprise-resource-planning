@@ -86,7 +86,7 @@ export const getDemoShipments = async () => {
 function normaliseEmployee(emp: any) {
   if (!emp) return emp
   return {
-    id: String(emp.id),
+    id: String(emp['employee-id'] ?? emp.id),
     firstName: emp.firstName ?? emp.first_name ?? '',
     lastName: emp.lastName ?? emp.last_name ?? '',
     email: emp.email ?? '',

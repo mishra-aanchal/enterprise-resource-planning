@@ -72,7 +72,7 @@ def serialize_department(d):
 def serialize_employee(e):
     dept = db.session.get(Department, e.department_id) if e.department_id else None
     return {
-        "id": e.id,
+        "employee-id": e.id,
         "firstName": e.first_name,
         "lastName": e.last_name,
         "email": e.email,
