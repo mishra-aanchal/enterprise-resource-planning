@@ -12,6 +12,7 @@ body:
       "firstName": "Jane",
       "lastName": "Smith",
       "email": "jane.smith@example.com",
+      "department": "Engineering",
       "departmentId": "dept-001",
       "position": "Software Engineer",
       "salary": 95000.00,
