@@ -130,9 +130,16 @@ def create_employee():
 
     mock_employees.append(new_employee)
 
+    # Response uses "employee-id" instead of "id"; internal storage keeps "id"
+    # so lookups by other endpoints (get/update/promote/terminate) still work.
+    response_employee = {
+        ("employee-id" if key == "id" else key): value
+        for key, value in new_employee.items()
+    }
+
     return jsonify({
         "success": True,
-        "data": new_employee,
+        "data": response_employee,
         "message": "Employee created successfully",
         "timestamp": datetime.utcnow().isoformat() + 'Z'
     }), 201
