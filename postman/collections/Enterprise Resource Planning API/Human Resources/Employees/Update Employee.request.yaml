@@ -72,7 +72,7 @@ description: |-
 
   ```json
   {
-    "id": "emp-789",
+    "employee-id": "emp-789",
     "firstName": "John",
     "lastName": "Doe",
     "email": "john.doe@example.com",
@@ -133,7 +133,7 @@ description: |-
 
   - Only the fields provided in the request body will be updated
   - The `updatedAt` timestamp will be automatically updated
-  - The `id`, `createdAt`, and `hireDate` fields cannot be modified
+  - The `employee-id`, `createdAt`, and `hireDate` fields cannot be modified
   - Use the "Promote Employee" endpoint for promotions with salary increases
   - Use the "Terminate Employee" endpoint to change status to terminated
 url: "{{baseUrl}}/api/hr/employees/{{lastCreatedEmployeeId}}"
