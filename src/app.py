@@ -1712,7 +1712,7 @@ def create_app() -> Flask:
         try:
             data = request.get_json()
             employee = {
-                'id': 'emp-' + str(datetime.utcnow().timestamp()),
+                'employee-id': 'emp-' + str(datetime.utcnow().timestamp()),
                 'firstName': data.get('firstName'),
                 'lastName': data.get('lastName'),
                 'email': data.get('email'),
@@ -1760,7 +1760,7 @@ def create_app() -> Flask:
         try:
             data = request.get_json()
             employee = {
-                'id': employee_id,
+                'employee-id': employee_id,
                 'firstName': data.get('firstName'),
                 'lastName': data.get('lastName'),
                 'email': data.get('email'),
@@ -1791,7 +1791,7 @@ def create_app() -> Flask:
             new_position = data.get('title') or data.get('newPosition')
             salary_increase = data.get('salaryIncrease') or data.get('newSalary')
             result = {
-                'id': employee_id,
+                'employee-id': employee_id,
                 'newPosition': new_position,
                 'salaryIncrease': salary_increase,
                 'effectiveDate': data.get('effectiveDate'),
@@ -1808,7 +1808,7 @@ def create_app() -> Flask:
         try:
             data = request.get_json()
             result = {
-                'id': employee_id,
+                'employee-id': employee_id,
                 'terminationDate': data.get('terminationDate'),
                 'reason': data.get('reason'),
                 'status': 'terminated',
