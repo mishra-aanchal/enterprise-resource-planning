@@ -10,6 +10,10 @@ when that module is imported by `src/app.py`.
 from __future__ import annotations
 
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from urllib.parse import urlparse, urlunparse, urlencode, parse_qs
 
 from flask import Flask
@@ -47,6 +51,15 @@ def _ensure_ssl(url: str) -> str:
     Neon requires SSL; this makes the requirement explicit so connections
     never silently fall back to plaintext.
     """
+    if url.startswith("sqlite"):
+        if url.startswith("sqlite:///") and not url.startswith("sqlite:////"):
+            # Convert relative path to absolute path to avoid ambiguity between Alembic and Flask
+            import os
+            project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+            db_path = url[len("sqlite:///"):]
+            return f"sqlite:///{os.path.join(project_root, db_path)}"
+        return url
+    
     parsed = urlparse(url)
     params = parse_qs(parsed.query, keep_blank_values=True)
     if "sslmode" not in params:

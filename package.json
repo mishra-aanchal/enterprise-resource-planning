@@ -1,0 +1,20 @@
+{
+  "name": "enterprise-resource-planning",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Enterprise Resource Planning Monolith",
+  "scripts": {
+    "setup": "npm install && cd frontend && npm install && cd .. && npm run setup:backend",
+    "setup:backend": "python3 -m venv venv && ./venv/bin/pip install -r requirements.txt",
+    "dev": "concurrently -c \"cyan,magenta\" -n \"backend,frontend\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:all": "npm run db:start && npm run db:setup && npm run db:seed && npm run dev",
+    "dev:backend": "./venv/bin/python src/app.py",
+    "dev:frontend": "cd frontend && npm run dev",
+    "db:start": "docker compose up -d db || docker-compose up -d db",
+    "db:setup": "FLASK_APP=src/app.py ./venv/bin/flask db upgrade",
+    "db:seed": "./venv/bin/python src/seed.py"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

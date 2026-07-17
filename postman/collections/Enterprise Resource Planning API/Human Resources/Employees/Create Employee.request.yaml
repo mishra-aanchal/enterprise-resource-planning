@@ -1,4 +1,5 @@
 $kind: http-request
+name: Create Employee
 description: |-
   ## Purpose
 
@@ -116,8 +117,7 @@ description: |-
 url: "{{baseUrl}}/api/hr/employees"
 method: POST
 headers:
-  - key: Content-Type
-    value: application/json
+  Content-Type: application/json
 body:
   type: json
   content: |-
@@ -134,8 +134,7 @@ body:
 auth:
   type: bearer
   credentials:
-    - key: token
-      value: \'{{authToken}}\'
+    token: \'{{authToken}}\'
 scripts:
   - type: beforeRequest
     code: |-

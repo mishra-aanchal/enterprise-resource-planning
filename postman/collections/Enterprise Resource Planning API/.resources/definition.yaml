@@ -1,4 +1,5 @@
 $kind: collection
+name: Enterprise Resource Planning API
 description: |-
   # Enterprise Resource Planning API
 
@@ -272,7 +273,7 @@ description: |-
   **Last Updated**: 2024  
   **License**: Proprietary - All rights reserved
 variables:
-  baseUrl: http://localhost:3004
+  baseUrl: http://localhost:3004/
   firstName: John
   lastName: Doe
   email: john.doe@example.com

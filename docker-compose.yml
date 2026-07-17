@@ -1,227 +1,60 @@
-# Microservices ERP — Docker Compose
-# Each business domain runs as an independent service.
-# The API Gateway (port 3010) is the single external entry point.
-
-x-service-defaults: &service-defaults
-  restart: unless-stopped
-  networks:
-    - erp-network
-  environment: &common-env
-    PYTHONPATH: /app
-    LOG_LEVEL: ${LOG_LEVEL:-info}
+version: "3.8"
 
 services:
-
-  # ── API Gateway (port 3010) ─────────────────────────────────────────────────
-  gateway:
-    <<: *service-defaults
+  api:
     build:
-      context: ../erp-gateway
-    container_name: erp-gateway
+      context: .
+      dockerfile: Dockerfile
+    container_name: erp-api
     ports:
-      - "3010:3010"
+      - "3004:3004"
     environment:
-      <<: *common-env
-      PORT: 3010
-      HR_SERVICE_URL: http://hr-service:3011
-      PAYROLL_SERVICE_URL: http://payroll-service:3012
-      ACCOUNTING_SERVICE_URL: http://accounting-service:3013
-      FINANCE_SERVICE_URL: http://finance-service:3014
-      BILLING_SERVICE_URL: http://billing-service:3015
-      PROCUREMENT_SERVICE_URL: http://procurement-service:3016
-      SUPPLY_CHAIN_SERVICE_URL: http://supply-chain-service:3017
-      INVENTORY_SERVICE_URL: http://inventory-service:3018
+      - FLASK_ENV=development
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USERNAME=erp_user
+      - DB_PASSWORD=erp_password
+      - DB_DATABASE=erp_monolith
     depends_on:
-      hr-service:
+      db:
         condition: service_healthy
-      payroll-service:
-        condition: service_healthy
-      accounting-service:
-        condition: service_healthy
-      finance-service:
-        condition: service_healthy
-      billing-service:
-        condition: service_healthy
-      procurement-service:
-        condition: service_healthy
-      supply-chain-service:
-        condition: service_healthy
-      inventory-service:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3010/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
+    networks:
+      - erp-network
 
-  # ── HR Service (port 3011) ──────────────────────────────────────────────────
-  hr-service:
-    <<: *service-defaults
+  frontend:
     build:
-      context: ../erp-hr
-    container_name: erp-hr
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: erp-frontend
     ports:
-      - "3011:3011"
+      - "5173:5173"
     environment:
-      <<: *common-env
-      PORT: 3011
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3011/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
+      - VITE_API_URL=http://localhost:3004
+    networks:
+      - erp-network
 
-  # ── Payroll Service (port 3012) ─────────────────────────────────────────────
-  payroll-service:
-    <<: *service-defaults
-    build:
-      context: ../erp-payroll
-    container_name: erp-payroll
+  db:
+    image: postgres:14-alpine
+    container_name: erp-db
     ports:
-      - "3012:3012"
+      - "5432:5432"
     environment:
-      <<: *common-env
-      PORT: 3012
-      HR_SERVICE_URL: http://hr-service:3011
-      ACCOUNTING_SERVICE_URL: http://accounting-service:3013
-    depends_on:
-      hr-service:
-        condition: service_healthy
-      accounting-service:
-        condition: service_healthy
+      - POSTGRES_USER=erp_user
+      - POSTGRES_PASSWORD=erp_password
+      - POSTGRES_DB=erp_monolith
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3012/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-
-  # ── Accounting Service (port 3013) ──────────────────────────────────────────
-  accounting-service:
-    <<: *service-defaults
-    build:
-      context: ../erp-accounting
-    container_name: erp-accounting
-    ports:
-      - "3013:3013"
-    environment:
-      <<: *common-env
-      PORT: 3013
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3013/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-
-  # ── Finance Service (port 3014) ─────────────────────────────────────────────
-  finance-service:
-    <<: *service-defaults
-    build:
-      context: ../erp-finance
-    container_name: erp-finance
-    ports:
-      - "3014:3014"
-    environment:
-      <<: *common-env
-      PORT: 3014
-      ACCOUNTING_SERVICE_URL: http://accounting-service:3013
-    depends_on:
-      accounting-service:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3014/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-
-  # ── Billing Service (port 3015) ─────────────────────────────────────────────
-  billing-service:
-    <<: *service-defaults
-    build:
-      context: ../erp-billing
-    container_name: erp-billing
-    ports:
-      - "3015:3015"
-    environment:
-      <<: *common-env
-      PORT: 3015
-      ACCOUNTING_SERVICE_URL: http://accounting-service:3013
-    depends_on:
-      accounting-service:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3015/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-
-  # ── Procurement Service (port 3016) ─────────────────────────────────────────
-  procurement-service:
-    <<: *service-defaults
-    build:
-      context: ../erp-procurement
-    container_name: erp-procurement
-    ports:
-      - "3016:3016"
-    environment:
-      <<: *common-env
-      PORT: 3016
-      ACCOUNTING_SERVICE_URL: http://accounting-service:3013
-    depends_on:
-      accounting-service:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3016/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-
-  # ── Supply-Chain Service (port 3017) ─────────────────────────────────────────
-  supply-chain-service:
-    <<: *service-defaults
-    build:
-      context: ../erp-supply-chain
-    container_name: erp-supply-chain
-    ports:
-      - "3017:3017"
-    environment:
-      <<: *common-env
-      PORT: 3017
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3017/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-
-  # ── Inventory Service (port 3018) ────────────────────────────────────────────
-  inventory-service:
-    <<: *service-defaults
-    build:
-      context: ../erp-inventory
-    container_name: erp-inventory
-    ports:
-      - "3018:3018"
-    environment:
-      <<: *common-env
-      PORT: 3018
-      PROCUREMENT_SERVICE_URL: http://procurement-service:3016
-    depends_on:
-      procurement-service:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3018/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
+      test: ["CMD-SHELL", "pg_isready -U erp_user -d erp_monolith"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - erp-network
 
 networks:
   erp-network:
     driver: bridge
+
+volumes:
+  pgdata:

@@ -1,5 +1,11 @@
 # Enterprise Resource Planning - Monolithic Application
 
+> **Quick Start**: To instantly start the database, run migrations, seed data, and start both the frontend and backend servers together, simply run:
+> ```bash
+> ./run_all.sh
+> ```
+> *(or use `npm run dev:all`)*
+
 A comprehensive monolithic ERP system demonstrating tightly-coupled enterprise modules with shared dependencies. This application serves as an educational example of traditional monolithic architecture patterns, showcasing both the advantages and challenges of tightly-coupled systems.
 
 ## Architecture Overview
