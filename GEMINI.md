@@ -8,11 +8,12 @@ The repository is a monolithic application. Natively running it with `npm run de
 ## 2. Check for existing processes
 Before starting, always check if processes are already running on ports `3004` (backend) or `5173` (frontend). If they are running in the background from a previous turn, **kill them** before attempting to restart the server natively, otherwise it will crash with an "Address already in use" error.
 
-## 3. Database Setup (If Requested / First Time)
-If the user wants the database started, migrated, and seeded:
-1. `npm run db:start` (starts PostgreSQL in Docker via `docker compose up -d db`)
-2. `npm run db:setup` (runs Flask DB migrations)
-3. `npm run db:seed` (imports the seed data)
+## 3. Setup and Database Initialization (If Requested / First Time)
+If the user wants to set up the environment and database from scratch, execute:
+```bash
+npm run setup
+```
+This handles installing dependencies, creating the Python virtual environment, and running the database migrations/seeds. (You do NOT need to run docker-compose since it defaults to SQLite locally).
 
 ## 4. Running the Code (Native Seamless Runner)
 The project includes a root `package.json` that uses `concurrently` to start both the Python backend and Vite frontend in a single terminal.
@@ -20,15 +21,6 @@ The project includes a root `package.json` that uses `concurrently` to start bot
 Execute:
 ```bash
 npm run dev
-```
-
-To run the database setup, migration, seeding and the dev server all at once, you can run the `run_all.sh` command file:
-```bash
-./run_all.sh
-```
-Or you can use the npm command:
-```bash
-npm run dev:all
 ```
 
 Run this command as a **background task** (if supported by your capabilities) so you can continue to assist the user while it runs. Wait for it to confirm both servers are listening (usually ports `3004` and `5173`) before telling the user the app is ready.

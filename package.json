@@ -4,7 +4,7 @@
   "private": true,
   "description": "Enterprise Resource Planning Monolith",
   "scripts": {
-    "setup": "npm install && cd frontend && npm install && cd .. && npm run setup:backend",
+    "setup": "npm install && cd frontend && npm install && cd .. && npm run setup:backend && npm run db:setup && npm run db:seed",
     "setup:backend": "python3 -m venv venv && ./venv/bin/pip install -r requirements.txt",
     "dev": "concurrently -c \"cyan,magenta\" -n \"backend,frontend\" \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:all": "npm run db:start && npm run db:setup && npm run db:seed && npm run dev",
