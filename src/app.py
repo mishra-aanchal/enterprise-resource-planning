@@ -1711,16 +1711,22 @@ def create_app() -> Flask:
         """V2: Create a new employee"""
         try:
             data = request.get_json()
+            now = datetime.utcnow()
             employee = {
-                'id': 'emp-' + str(datetime.utcnow().timestamp()),
+                'employee-id': 'emp-' + str(now.timestamp()),
+                'employeeId': 'EMP-' + now.strftime('%Y') + '-' + str(int(now.timestamp()))[-4:],
                 'firstName': data.get('firstName'),
                 'lastName': data.get('lastName'),
                 'email': data.get('email'),
+                'department': data.get('department', ''),
                 'departmentId': data.get('departmentId'),
                 'position': data.get('position'),
                 'salary': data.get('salary'),
                 'hireDate': data.get('hireDate'),
-                'status': 'active'
+                'status': 'active',
+                'phoneNumber': data.get('phoneNumber'),
+                'createdAt': now.isoformat() + 'Z',
+                'updatedAt': now.isoformat() + 'Z'
             }
             return v2_success_response(employee, 201)
         except Exception as e:
