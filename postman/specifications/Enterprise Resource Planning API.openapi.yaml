@@ -274,7 +274,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Employee'
+                $ref: '#/components/schemas/EmployeeCreateResponse'
         '400':
           description: Invalid input data
           content:
@@ -1127,7 +1127,7 @@ components:
     Employee:
       type: object
       properties:
-        employee-id:
+        id:
           type: string
         firstName:
           type: string
@@ -1139,6 +1139,41 @@ components:
         departmentId:
           type: string
         # Both `position` and `jobTitle` are returned for compatibility
+        position:
+          type: string
+        jobTitle:
+          type: string
+        salary:
+          type: number
+        hireDate:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [active, inactive, on_leave, terminated]
+        department:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+
+    EmployeeCreateResponse:
+      description: Employee response returned by Create Employee. Uses "employee-id" instead of "id".
+      type: object
+      properties:
+        employee-id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        departmentId:
+          type: string
         position:
           type: string
         jobTitle:
