@@ -186,7 +186,7 @@ paths:
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/EmployeeCreated'
+                        $ref: '#/components/schemas/Employee'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -1358,72 +1358,6 @@ components:
         - status
       properties:
         id:
-          type: string
-          description: Internal database ID
-          example: "emp_1234567890"
-        employeeId:
-          type: string
-          description: Human-readable employee ID
-          example: "EMP-2024-001"
-        firstName:
-          type: string
-          example: "John"
-        lastName:
-          type: string
-          example: "Doe"
-        email:
-          type: string
-          format: email
-          example: "john.doe@example.com"
-        department:
-          type: string
-          example: "Engineering"
-        departmentId:
-          type: string
-          example: "dept_engineering"
-        position:
-          type: string
-          example: "Senior Software Engineer"
-        salary:
-          type: number
-          format: double
-          example: 95000.00
-        hireDate:
-          type: string
-          format: date
-          example: "2024-01-15"
-        status:
-          type: string
-          enum: [active, inactive, onLeave, terminated]
-          example: "active"
-        phoneNumber:
-          type: string
-          example: "+1-555-0123"
-        createdAt:
-          type: string
-          format: date-time
-          example: "2024-01-15T10:30:00Z"
-        updatedAt:
-          type: string
-          format: date-time
-          example: "2024-01-15T10:30:00Z"
-
-    EmployeeCreated:
-      description: Employee record returned by the Create Employee response. Same as Employee, but exposes the identifier as `employee-id` instead of `id`.
-      type: object
-      required:
-        - employee-id
-        - employeeId
-        - firstName
-        - lastName
-        - email
-        - department
-        - position
-        - salary
-        - hireDate
-        - status
-      properties:
-        employee-id:
           type: string
           description: Internal database ID
           example: "emp_1234567890"
