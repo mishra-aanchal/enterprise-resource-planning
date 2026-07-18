@@ -1,3 +1,7 @@
 $kind: collection
 name: Employees
 description: Employee lifecycle management.
+variables:
+  - key: employeeId
+    value: emp-001
+    description: Populated from the last Create Employee response ("employee-id"); used by other requests below.
