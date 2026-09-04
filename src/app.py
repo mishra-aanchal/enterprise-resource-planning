@@ -541,10 +541,7 @@ def create_app() -> Flask:
         )
         db.session.add(emp)
         db.session.commit()
-        # Create response uses "employee-id" instead of "id" (other endpoints keep "id")
-        created = serialize_employee(emp)
-        created['employee-id'] = created.pop('id')
-        return jsonify(created), 201
+        return jsonify(serialize_employee(emp)), 201
     
     @app.route('/api/hr/employees', methods=['GET'])
     def get_all_employees():
@@ -1715,8 +1712,7 @@ def create_app() -> Flask:
         try:
             data = request.get_json()
             employee = {
-                # Create response uses "employee-id" instead of "id" (other endpoints keep "id")
-                'employee-id': 'emp-' + str(datetime.utcnow().timestamp()),
+                'id': 'emp-' + str(datetime.utcnow().timestamp()),
                 'firstName': data.get('firstName'),
                 'lastName': data.get('lastName'),
                 'email': data.get('email'),
