@@ -130,13 +130,9 @@ def create_employee():
 
     mock_employees.append(new_employee)
 
-    # Create response uses "employee-id" instead of "id" (other endpoints keep "id")
-    response_employee = {**new_employee, "employee-id": new_employee["id"]}
-    del response_employee["id"]
-
     return jsonify({
         "success": True,
-        "data": response_employee,
+        "data": new_employee,
         "message": "Employee created successfully",
         "timestamp": datetime.utcnow().isoformat() + 'Z'
     }), 201
