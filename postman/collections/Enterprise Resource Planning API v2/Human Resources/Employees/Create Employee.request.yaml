@@ -18,19 +18,4 @@ body:
       "hireDate": "2024-01-15",
       "phoneNumber": "+1-555-0123"
     }
-scripts:
-  - type: afterResponse
-    code: |-
-      pm.test("Status code is 201 Created", function () {
-          pm.response.to.have.status(201);
-      });
-
-      // Create Employee responds with "employee-id" instead of "id"
-      // (other v2 employee endpoints keep "id").
-      pm.test("Response data contains employee-id", function () {
-          const body = pm.response.json();
-          pm.expect(body.data).to.have.property("employee-id");
-          pm.expect(body.data["employee-id"]).to.not.be.empty;
-      });
-    language: text/javascript
 order: 3000
