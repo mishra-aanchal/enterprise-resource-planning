@@ -541,7 +541,10 @@ def create_app() -> Flask:
         )
         db.session.add(emp)
         db.session.commit()
-        return jsonify(serialize_employee(emp)), 201
+        # Create response uses "employee-id" instead of "id" (other endpoints keep "id")
+        created = serialize_employee(emp)
+        created['employee-id'] = created.pop('id')
+        return jsonify(created), 201
     
     @app.route('/api/hr/employees', methods=['GET'])
     def get_all_employees():
@@ -1711,16 +1714,26 @@ def create_app() -> Flask:
         """V2: Create a new employee"""
         try:
             data = request.get_json()
+            department_id = data.get('departmentId')
+            dept = db.session.get(Department, department_id) if department_id else None
+            now = datetime.utcnow().isoformat() + 'Z'
+            new_id = 'emp-' + str(datetime.utcnow().timestamp())
             employee = {
-                'id': 'emp-' + str(datetime.utcnow().timestamp()),
+                # Create response uses "employee-id" instead of "id" (other v2 endpoints keep "id")
+                'employee-id': new_id,
+                'employeeId': 'EMP-' + new_id.split('.')[-1],
                 'firstName': data.get('firstName'),
                 'lastName': data.get('lastName'),
                 'email': data.get('email'),
-                'departmentId': data.get('departmentId'),
+                'department': dept.name if dept else department_id,
+                'departmentId': department_id,
                 'position': data.get('position'),
                 'salary': data.get('salary'),
                 'hireDate': data.get('hireDate'),
-                'status': 'active'
+                'status': 'active',
+                'phoneNumber': data.get('phoneNumber'),
+                'createdAt': now,
+                'updatedAt': now,
             }
             return v2_success_response(employee, 201)
         except Exception as e:
